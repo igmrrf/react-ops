@@ -9,10 +9,18 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
-import WithStyles from "@material-ui/styles/withStyles";
+import withStyles from "@material-ui/styles/withStyles";
 
-const styles = { root: { margin: 20, padding: 20, maxWidth: 400 } };
-export default class App extends Component {
+const styles = ({ spacing: { unit } }) => ({
+  root: { margin: unit, padding: unit * 3, maxWidth: 400 },
+  form: {
+    display: "flex",
+    alignItems: "baseline",
+    justifyContent: "space-evenly"
+  }
+});
+
+class App extends Component {
   state = {
     exercises: [
       { id: 1, title: "Bench Press" },
@@ -22,7 +30,6 @@ export default class App extends Component {
     title: ""
   };
   handleDelete = id => {
-    console.log(id);
     this.setState(({ exercises }) => ({
       exercises: exercises.filter(ex => ex.id !== id)
     }));
@@ -42,13 +49,13 @@ export default class App extends Component {
 
   render() {
     const { title, exercises } = this.state;
-
+    const { classes } = this.props;
     return (
-      <Paper>
+      <Paper className={classes.root}>
         <Typography variant="h3" component="h1" align="center" gutterBottom>
           Exercises
         </Typography>
-        <form onSubmit={this.handleCreate}>
+        <form className={classes.form} onSubmit={this.handleCreate}>
           <TextField
             name="title"
             label="Exercises"
@@ -79,3 +86,4 @@ export default class App extends Component {
     );
   }
 }
+export default withStyles(styles)(App);
