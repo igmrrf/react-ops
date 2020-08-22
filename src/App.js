@@ -1,89 +1,100 @@
-import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import React from "react";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import GridListTileBar from "@material-ui/core/GridListTileBar";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import IconButton from "@material-ui/core/IconButton";
-import Delete from "@material-ui/icons/Delete";
-import withStyles from "@material-ui/styles/withStyles";
+import InfoIcon from "@material-ui/icons/Info";
+import Tooltip from "@material-ui/core/Tooltip";
 
-const styles = ({ spacing: { unit } }) => ({
-  root: { margin: unit, padding: unit * 3, maxWidth: 400 },
-  form: {
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  root: {
     display: "flex",
-    alignItems: "baseline",
-    justifyContent: "space-evenly"
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    overflow: "hidden",
+    backgroundColor: theme.palette.background.paper
+  },
+  gridList: {
+    width: 600,
+    maxHeight: 500
+  },
+  icon: {
+    color: "rgba(255, 255, 255, 0.54)"
   }
-});
+}));
 
-class App extends Component {
-  state = {
-    exercises: [
-      { id: 1, title: "Bench Press" },
-      { id: 2, title: "Deadlift" },
-      { id: 3, title: "Squats" }
-    ],
-    title: ""
-  };
-  handleDelete = id => {
-    this.setState(({ exercises }) => ({
-      exercises: exercises.filter(ex => ex.id !== id)
-    }));
-  };
-  handleChange = ({ target: { name, value } }) =>
-    this.setState({ [name]: value });
-  handleCreate = e => {
-    e.preventDefault();
-    if (this.state.title) {
-      this.setState(({ exercises, title }) => ({
-        exercises: [...exercises, { title, id: Date.now() }],
-        title: ""
-      }));
-    }
-    console.log("Yamero");
-  };
-
-  render() {
-    const { title, exercises } = this.state;
-    const { classes } = this.props;
-    return (
-      <Paper className={classes.root}>
-        <Typography variant="h3" component="h1" align="center" gutterBottom>
-          Exercises
-        </Typography>
-        <form className={classes.form} onSubmit={this.handleCreate}>
-          <TextField
-            name="title"
-            label="Exercises"
-            onChange={this.handleChange}
-            value={title}
-            margin="normal"
-          />
-          <Button variant="contained" type="submit" color="primary">
-            Create
-          </Button>
-        </form>
-        <List>
-          {exercises.map(({ id, title }) => (
-            <ListItem key={id}>
-              <ListItemText primary={title} />
-              <ListItemSecondaryAction>
-                <IconButton
-                  color="primary"
-                  onClick={() => this.handleDelete(id)}
-                >
-                  <Delete />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-    );
+const tileData = [
+  {
+    img: "https://picsum.photos/200",
+    title: "First One",
+    author: "Lazy"
+  },
+  {
+    img: "https://picsum.photos/200",
+    title: "Second One",
+    author: "Dev"
+  },
+  {
+    img: "https://picsum.photos/200",
+    title: "Third One",
+    author: "Otaku"
+  },
+  {
+    img: "https://picsum.photos/200",
+    title: "Fourth",
+    author: "The"
   }
+];
+
+/**
+ * The example data is structured as follows:
+ *
+ * import image from 'path/to/image.jpg';
+ * [etc...]
+ *
+ * const tileData = [
+ *   {
+ *     img: image,
+ *     title: 'Image',
+ *     author: 'author',
+ *   },
+ *   {
+ *     [etc...]
+ *   },
+ * ];
+ */
+export default function TitlebarGridList() {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <GridList cellHeight={180} className={classes.gridList}>
+        <GridListTile key="Subheader" cols={2} style={{ height: "auto" }}>
+          <ListSubheader component="div">December</ListSubheader>
+        </GridListTile>
+        {tileData.map(tile => (
+          <GridListTile key={tile.img}>
+            <img src={tile.img} alt={tile.title} />
+            <GridListTileBar
+              title={tile.title}
+              subtitle={<span>by: {tile.author}</span>}
+              actionIcon={
+                <Tooltip title="info">
+                  <IconButton
+                    aria-label={`info about ${tile.title}`}
+                    className={classes.icon}
+                  >
+                    <InfoIcon />
+                  </IconButton>
+                </Tooltip>
+              }
+            />
+          </GridListTile>
+        ))}
+      </GridList>
+    </div>
+  );
 }
-export default withStyles(styles)(App);
